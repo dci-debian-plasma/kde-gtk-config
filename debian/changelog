@@ -1,4 +1,4 @@
-kde-gtk-config (4:5.5.4-0ubuntu1) UNRELEASED; urgency=medium
+kde-gtk-config (4:5.5.4-0ubuntu1) xenial; urgency=medium
 
   [ Scarlett Clark ]
   * Debian merge: No remaining changes. 
@@ -8,7 +8,7 @@ kde-gtk-config (4:5.5.4-0ubuntu1) UNRELEASED; urgency=medium
   * New upstream release
   * New upstream release
 
- -- Clive Johnston <clivejo@aol.com>  Wed, 27 Jan 2016 20:08:28 +0000
+ -- Clive Johnston <clivejo@aol.com>  Mon, 07 Mar 2016 21:19:41 +0100
 
 kde-gtk-config (4:5.4.3-0ubuntu1) xenial; urgency=medium
 
