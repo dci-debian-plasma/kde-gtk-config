@@ -1,3 +1,11 @@
+kde-gtk-config (4:5.6.2-1~1.gbpd6ab77) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @d6ab77b7aea3f9f527a4b288a8bf3b2ddf98b871 **
+
+  * UNRELEASED
+
+ -- Maximiliano Curia <jenkins@amadeus.gnuservers.com.ar>  Wed, 06 Apr 2016 23:18:13 +0200
+
 kde-gtk-config (4:5.5.5-1~) UNRELEASED; urgency=medium
 
   * New upstream release (5.5.5).
