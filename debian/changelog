@@ -1,6 +1,6 @@
-kde-gtk-config (4:5.6.3-1~1.gbpa6c02b) UNRELEASED; urgency=medium
+kde-gtk-config (4:5.6.4-1~1.gbp40af5e) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @a6c02b6e996afea6990d127a90346fa590169864 **
+  ** SNAPSHOT build @40af5ef4c98a8aba0dd67e93c19db897eb8e4b09 **
 
   [ Maximiliano Curia ]
   ** SNAPSHOT build @d6ab77b7aea3f9f527a4b288a8bf3b2ddf98b871 **
@@ -8,11 +8,12 @@ kde-gtk-config (4:5.6.3-1~1.gbpa6c02b) UNRELEASED; urgency=medium
   * New upstream release (5.5.5).
   * Add upstream metadata (DEP-12)
   * debian/control: Update Vcs-Browser and Vcs-Git fields
+  * UNRELEASED
 
   [ Automatic packaging ]
   * Bump Standards-Version to 3.9.8
 
- -- Maximiliano Curia <maxy@gnuservers.com.ar>  Tue, 19 Apr 2016 15:50:38 +0200
+ -- Maximiliano Curia <jenkins@amadeus.gnuservers.com.ar>  Tue, 10 May 2016 21:18:16 +0200
 
 kde-gtk-config (4:5.5.4-1) experimental; urgency=medium
 
