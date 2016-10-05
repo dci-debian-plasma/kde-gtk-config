@@ -1,16 +1,17 @@
-kde-gtk-config (4:5.8.0-1~1.gbp310082) UNRELEASED; urgency=medium
+kde-gtk-config (4:5.8.0-1~2.gbp639dd3) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @31008254c8119306f158b40380d1c20c99bf2388 **
+  ** SNAPSHOT build @639dd3eac1db62ad86bc0b8dbb4680d8e33cd17e **
 
   [ Maximiliano Curia ]
   ** SNAPSHOT build @269d6cb57924ac1c96a2d685e31ece9d2d976eba **
 
   * UNRELEASED
+  * Replace dbus-launch with dbus-run-session in tests
 
   [ Automatic packaging ]
   * Update build-deps and deps with the info from cmake
 
- -- Automatic packaging <maxy+jenkins@gnuservers.com.ar>  Tue, 04 Oct 2016 13:38:50 +0200
+ -- Maximiliano Curia <maxy@gnuservers.com.ar>  Wed, 05 Oct 2016 18:18:28 +0200
 
 kde-gtk-config (4:5.7.4-1) unstable; urgency=medium
 
