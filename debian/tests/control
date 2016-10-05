@@ -1,4 +1,4 @@
 Tests: testsuite
 Depends: @, @builddeps@, build-essential,
-         xvfb, xauth, dbus-x11, openbox, fonts-oxygen
+         xvfb, xauth, dbus (>= 1.8), openbox, fonts-oxygen
 Restrictions: rw-build-tree
