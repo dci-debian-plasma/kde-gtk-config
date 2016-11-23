@@ -1,11 +1,8 @@
-kde-gtk-config (4:5.8.4-1~1.gbp7cc4af) UNRELEASED; urgency=medium
+kde-gtk-config (4:5.8.4-1) unstable; urgency=medium
 
-  ** SNAPSHOT build @7cc4af8da9cfdf6e41e77f0a9b61589cfa5aaf3c **
+  * New upstream release (5.8.4)
 
-  * UNRELEASED
-  * UNRELEASED
-
- -- Maximiliano Curia <jenkins@gnuservers.com.ar>  Tue, 22 Nov 2016 15:18:42 +0100
+ -- Maximiliano Curia <maxy@debian.org>  Wed, 23 Nov 2016 18:35:00 +0100
 
 kde-gtk-config (4:5.8.2-1) unstable; urgency=medium
 
