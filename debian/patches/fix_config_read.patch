@@ -1,24 +1,26 @@
-From 34357f74ee2d98128ff423b0ec6ddcbf4232c475 Mon Sep 17 00:00:00 2001
+From 2d417a6c9b7765c79aba124aa425787435c27aea Mon Sep 17 00:00:00 2001
 From: Aleix Pol <aleixpol@kde.org>
 Date: Wed, 21 Jun 2017 21:14:59 +0200
 Subject: Make the kde-gtk-config kcm better at checking global gtk settings
+
+Cherry-picked onto Plasma/5.10
 
 BUG: 378013
 ---
  CMakeLists.txt           |   2 +-
  src/abstractappearance.h |   5 +-
- src/appearancegtk2.cpp   | 103 +++++++++++++++++++++-------------
- src/appearancegtk2.h     |  11 +++-
- src/appearancegtk3.cpp   | 143 ++++++++++++++++++++++++++---------------------
- src/appearancegtk3.h     |  10 +++-
+ src/appearancegtk2.cpp   | 103 +++++++++++++++++++++--------------
+ src/appearancegtk2.h     |  17 ++++--
+ src/appearancegtk3.cpp   | 139 +++++++++++++++++++++++++++--------------------
+ src/appearancegtk3.h     |   9 +++
  src/appearencegtk.cpp    |   4 +-
  tests/CMakeLists.txt     |   2 +-
  tests/configsavetest.cpp |  75 +++++++++++++++----------
  tests/configsavetest.h   |   8 +--
- 10 files changed, 219 insertions(+), 144 deletions(-)
+ 10 files changed, 222 insertions(+), 142 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 677b8b9..907a801 100644
+index 2c89636..52af185 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -55,7 +55,7 @@ ki18n_wrap_ui(kcm_SRCS
@@ -199,18 +201,23 @@ index 791bb1f..23a0b9a 100644
 +    return saveSettingsPrivate(gtkrcFile);
 +}
 diff --git a/src/appearancegtk2.h b/src/appearancegtk2.h
-index 8bc28ee..7df49bf 100644
+index 345dff0..7df49bf 100644
 --- a/src/appearancegtk2.h
 +++ b/src/appearancegtk2.h
-@@ -29,10 +29,17 @@ class AppearanceGTK2 : public AbstractAppearance
+@@ -27,12 +27,19 @@
+ 
+ class AppearanceGTK2 : public AbstractAppearance
  {
-     bool loadSettings(const QString& path) override;
-     bool saveSettings(const QString& path) const override;
--    QString defaultConfigFile() const override;
+-    virtual bool loadSettings(const QString& path);
+-    virtual bool saveSettings(const QString& path) const;
+-    virtual QString defaultConfigFile() const;
+-    virtual QStringList installedThemes() const;
+-    
++    bool loadSettings(const QString& path) override;
++    bool saveSettings(const QString& path) const override;
 +    bool loadSettings() override;
 +    bool saveSettings() const override;
-     QStringList installedThemes() const override;
--    
++    QStringList installedThemes() const override;
 +
      QString themesGtkrcFile(const QString& themeName) const;
 +
@@ -223,7 +230,7 @@ index 8bc28ee..7df49bf 100644
  
  #endif // APPEARANCEGTK2_H
 diff --git a/src/appearancegtk3.cpp b/src/appearancegtk3.cpp
-index fa1bde5..7df48c3 100644
+index 25495ec..15e1c7e 100644
 --- a/src/appearancegtk3.cpp
 +++ b/src/appearancegtk3.cpp
 @@ -25,6 +25,8 @@
@@ -235,7 +242,7 @@ index fa1bde5..7df48c3 100644
  
  QStringList AppearanceGTK3::installedThemes() const
  {
-@@ -51,76 +53,65 @@ QStringList AppearanceGTK3::installedThemes() const
+@@ -51,72 +53,65 @@ QStringList AppearanceGTK3::installedThemes() const
      return themes;
  }
  
@@ -285,7 +292,6 @@ index fa1bde5..7df48c3 100644
 -    flow3 << "gtk-menu-images=" << m_settings["show_icons_menus"] << "\n";
 -    flow3 << "gtk-button-images=" << m_settings["show_icons_buttons"] << "\n";
 -    flow3 << "gtk-primary-button-warps-slider=" << m_settings["primary_button_warps_slider"] << "\n";
--    flow3 << "gtk-application-prefer-dark-theme=" << m_settings["application_prefer_dark_theme"] << "\n";
  
 +    m_settings = QMap<QString, QString> {
 +        {"toolbar_style", "GTK_TOOLBAR_ICONS"},
@@ -327,8 +333,7 @@ index fa1bde5..7df48c3 100644
 -            {"toolbar_style", "GTK_TOOLBAR_ICONS"},
 -            {"show_icons_buttons", "0"},
 -            {"show_icons_menus", "0"},
--            {"primary_button_warps_slider", "false"},
--            {"application_prefer_dark_theme", "false"}
+-            {"primary_button_warps_slider", "false"}
 -        };
 -
 -        for(auto it = foundSettings.constBegin(), itEnd = foundSettings.constEnd(); it!=itEnd; ++it) {
@@ -350,8 +355,6 @@ index fa1bde5..7df48c3 100644
 -                m_settings["show_icons_menus"] = *it;
 -            else if (it.key() == "gtk-primary-button-warps-slider")
 -                m_settings["primary_button_warps_slider"] = *it;
--            else if (it.key() == "gtk-application-prefer-dark-theme")
--                m_settings["application_prefer_dark_theme"] = *it;
 -            else
 -                qWarning() << "unknown field" << it.key();
 -        }
@@ -363,19 +366,13 @@ index fa1bde5..7df48c3 100644
  }
  
  QString AppearanceGTK3::defaultConfigFile() const
-@@ -129,7 +120,7 @@ QString AppearanceGTK3::defaultConfigFile() const
+@@ -125,5 +120,31 @@ QString AppearanceGTK3::defaultConfigFile() const
      if(root.isEmpty())
          root = QFileInfo(QDir::home(), ".config").absoluteFilePath();
      
 -    return root+"/gtk-3.0/settings.ini";
 +    return root + '/' + configFileName();
- }
- 
- bool AppearanceGTK3::getApplicationPreferDarkTheme() const
-@@ -141,3 +132,29 @@ void AppearanceGTK3::setApplicationPreferDarkTheme(const bool& enable)
- {
-     m_settings["application_prefer_dark_theme"] = enable ? "true" : "false";
- }
++}
 +
 +bool AppearanceGTK3::saveSettings(const QString& file) const
 +{
@@ -401,9 +398,9 @@ index fa1bde5..7df48c3 100644
 +    auto cfg = KSharedConfig::openConfig(configFileName());
 +    cfg->setReadDefaults(true);
 +    return saveSettings(cfg);
-+}
+ }
 diff --git a/src/appearancegtk3.h b/src/appearancegtk3.h
-index d4562b1..3ce5a05 100644
+index f20a68a..ef1f98e 100644
 --- a/src/appearancegtk3.h
 +++ b/src/appearancegtk3.h
 @@ -23,6 +23,7 @@
@@ -414,20 +411,15 @@ index d4562b1..3ce5a05 100644
  #include "abstractappearance.h"
  
  class AppearanceGTK3 : public AbstractAppearance
-@@ -30,11 +31,18 @@ class AppearanceGTK3 : public AbstractAppearance
- 
- public:
-     QStringList installedThemes() const override;
+@@ -33,6 +34,14 @@ public:
+     virtual bool saveSettings(const QString& file) const;
+     virtual bool loadSettings(const QString& path);
+     virtual QString defaultConfigFile() const;
++
 +    bool saveSettings() const override;
 +    bool loadSettings() override;
-     bool saveSettings(const QString& file) const override;
-     bool loadSettings(const QString& path) override;
--    QString defaultConfigFile() const override;
-     bool getApplicationPreferDarkTheme() const;
-     void setApplicationPreferDarkTheme(const bool& enable);
 +
 +private:
-+    QString defaultConfigFile() const;
 +    QString configFileName() const;
 +    bool saveSettings(const KSharedConfig::Ptr& file) const;
 +    bool loadSettings(const KSharedConfig::Ptr& file);
@@ -435,10 +427,10 @@ index d4562b1..3ce5a05 100644
  
  #endif // APPEARANCEGTK3_H
 diff --git a/src/appearencegtk.cpp b/src/appearencegtk.cpp
-index 2e26a5a..95a6604 100644
+index c1dc32c..ff2e662 100644
 --- a/src/appearencegtk.cpp
 +++ b/src/appearencegtk.cpp
-@@ -64,7 +64,7 @@ bool AppearenceGTK::loadFileConfig()
+@@ -62,7 +62,7 @@ bool AppearenceGTK::loadFileConfig()
  {
      bool correct = false;
      foreach(AbstractAppearance* app, m_app) {
@@ -447,7 +439,7 @@ index 2e26a5a..95a6604 100644
          correct = correct || c;
      }
  //     qDebug() << "loading..." << correct;
-@@ -75,7 +75,7 @@ bool AppearenceGTK::saveFileConfig()
+@@ -73,7 +73,7 @@ bool AppearenceGTK::saveFileConfig()
  {
      bool correct = true;
      foreach(AbstractAppearance* app, m_app) {
@@ -470,10 +462,10 @@ index 997eb39..c017424 100644
  
  add_kgc_test(fontstest ../src/fontshelpers.cpp)
 diff --git a/tests/configsavetest.cpp b/tests/configsavetest.cpp
-index d5d8460..1fe8f4f 100644
+index bde72bb..14ceeac 100644
 --- a/tests/configsavetest.cpp
 +++ b/tests/configsavetest.cpp
-@@ -9,33 +9,40 @@
+@@ -9,28 +9,35 @@
  
  QTEST_GUILESS_MAIN(ConfigSaveTest);
  
@@ -494,12 +486,6 @@ index d5d8460..1fe8f4f 100644
      a->setShowIconsInButtons(true);
      a->setShowIconsInMenus(true);
      a->setPrimaryButtonWarpsSlider(true);
- 
--    auto a3 = dynamic_cast<AppearanceGTK3*>(a);
-+    auto a3 = dynamic_cast<AppearanceGTK3*>(a.data());
-     if (a3) {
-         a3->setApplicationPreferDarkTheme(false);
-     }
  }
  
 -bool compareAppearances(AbstractAppearance* a, AbstractAppearance* b)
@@ -525,19 +511,13 @@ index d5d8460..1fe8f4f 100644
  }
  
  QByteArray readFile(const QString& path)
-@@ -46,23 +53,35 @@ QByteArray readFile(const QString& path)
+@@ -41,23 +48,35 @@ QByteArray readFile(const QString& path)
      return f.readAll();
  }
  
 -void ConfigSaveTest::testOpen()
 +void ConfigSaveTest::testGtk2()
- {
--    QVector<AbstractAppearance*> instances;
--    instances << new AppearanceGTK2 << new AppearanceGTK3;
--    fillValues(instances[0]);
--    fillValues(instances[1]);
--    QVERIFY(instances[0]->saveSettings("test-gtk2"));
--    QVERIFY(instances[1]->saveSettings("test-gtk3"));
++{
 +    const QString pathA = QDir::current().absoluteFilePath("test-gtk2")
 +                , pathB = QDir::current().absoluteFilePath("testB-gtk2");
 +
@@ -553,7 +533,24 @@ index d5d8460..1fe8f4f 100644
 +}
 +
 +void ConfigSaveTest::testGtk3()
-+{
+ {
+-    QVector<AbstractAppearance*> instances;
+-    instances << new AppearanceGTK2 << new AppearanceGTK3;
+-    fillValues(instances[0]);
+-    fillValues(instances[1]);
+-    QVERIFY(instances[0]->saveSettings("test-gtk2"));
+-    QVERIFY(instances[1]->saveSettings("test-gtk3"));
+-
+-    QVector<AbstractAppearance*> reloaded;
+-    reloaded << new AppearanceGTK2 << new AppearanceGTK3;
+-    QVERIFY(reloaded[0]->loadSettings("test-gtk2"));
+-    QVERIFY(reloaded[1]->loadSettings("test-gtk3"));
+-    QVERIFY(compareAppearances(reloaded[0], instances[0]));
+-    QVERIFY(compareAppearances(reloaded[1], instances[1]));
+-    QVERIFY(reloaded[0]->saveSettings("testB-gtk2"));
+-    QVERIFY(reloaded[1]->saveSettings("testB-gtk3"));
+-    QCOMPARE(readFile("test-gtk2"), readFile("testB-gtk2"));
+-    QCOMPARE(readFile("test-gtk3"), readFile("testB-gtk3"));
 +    QScopedPointer<AbstractAppearance> instance(new AppearanceGTK3);
 +    fillValues(instance);
 +    const QString pathA = QDir::current().absoluteFilePath("test-gtk3")
@@ -565,17 +562,7 @@ index d5d8460..1fe8f4f 100644
 +    QVERIFY(reloaded->loadSettings(pathA));
 +    compareAppearances(reloaded, instance);
 +    QVERIFY(reloaded->saveSettings(pathB));
- 
--    QVector<AbstractAppearance*> reloaded;
--    reloaded << new AppearanceGTK2 << new AppearanceGTK3;
--    QVERIFY(reloaded[0]->loadSettings("test-gtk2"));
--    QVERIFY(reloaded[1]->loadSettings("test-gtk3"));
--    QVERIFY(compareAppearances(reloaded[0], instances[0]));
--    QVERIFY(compareAppearances(reloaded[1], instances[1]));
--    QVERIFY(reloaded[0]->saveSettings("testB-gtk2"));
--    QVERIFY(reloaded[1]->saveSettings("testB-gtk3"));
--    QCOMPARE(readFile("test-gtk2"), readFile("testB-gtk2"));
--    QCOMPARE(readFile("test-gtk3"), readFile("testB-gtk3"));
++
 +    QCOMPARE(readFile(pathA), readFile(pathB));
  }
 diff --git a/tests/configsavetest.h b/tests/configsavetest.h
