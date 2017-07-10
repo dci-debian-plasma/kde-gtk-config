@@ -3,9 +3,9 @@ Section: kde
 Priority: optional
 Maintainer: Debian/Kubuntu Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
 Uploaders: Boris Pek <tehnick@debian.org>, Maximiliano Curia <maxy@debian.org>
-Build-Depends: cmake,
+Build-Depends: cmake (>= 2.8.12),
                debhelper (>= 10),
-               extra-cmake-modules,
+               extra-cmake-modules (>= 0.0.9),
                libgtk-3-dev,
                libgtk2.0-dev,
                libkf5archive-dev,
