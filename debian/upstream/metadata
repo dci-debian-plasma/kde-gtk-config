@@ -1,7 +1,7 @@
 Name: kde-gtk-config
-Changelog: https://quickgit.kde.org/?p=kde-gtk-config.git&a=log
+Changelog: https://cgit.kde.org/kde-gtk-config.git/log
 Contact: plasma-devel@kde.org
 Donation: https://www.kde.org/community/donations/index.php
 Repository: https://anongit.kde.org/kde-gtk-config.git
-Repository-Browse: https://quickgit.kde.org/?p=kde-gtk-config.git
+Repository-Browse: https://cgit.kde.org/kde-gtk-config.git
 Security-Contact: security@kde.org
