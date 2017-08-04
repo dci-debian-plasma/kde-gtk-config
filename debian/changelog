@@ -1,3 +1,24 @@
+kde-gtk-config (4:5.10.4-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Bump Standards-Version to 4.0.0 (was 3.9.8): no changes required.
+  * Bump debhelper version to 10 (was 9); update debian/compat.
+  * Update debian/control:
+    - simpify Build-Depends and sort them using wrap-and-sort tool
+    - set Multi-Arch fields to binary packages
+  * Update debian/rules:
+    - set DEB_CXXFLAGS_MAINT_APPEND, DEB_LDFLAGS_MAINT_APPEND and
+      DEB_BUILD_MAINT_OPTIONS variables
+    - set DATA_INSTALL_DIR variable in configuration options: it is required
+      for correct search of preview.ui file in gtk*_preview programs.
+      (These programs have not been working since version 4:5.1.95-0ubuntu1)
+  * Add patch fix-search-of-gtk-preview-executables.
+    It is required for showing preview buttons in KDE-GTK-config UI.
+    (These buttons have not been working since version 4:5.1.95-0ubuntu1)
+  * Update debian/copyright.
+
+ -- Boris Pek <tehnick@debian.org>  Fri, 04 Aug 2017 16:59:19 +0300
+
 kde-gtk-config (4:5.8.6-1) unstable; urgency=medium
 
   * New upstream release (5.8.6)
