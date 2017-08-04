@@ -1,14 +1,16 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Debianized-By: Boris Pek <tehnick-8@mail.ru>
+Debianized-By: Boris Pek <tehnick-8@yandex.ru>
 Debianized-Date: Wed, 08 Feb 2012 00:15:14 +0200
 Upstream-Name: kde-gtk-config
 Upstream-Contact: Jose Antonio Sánchez Reynaga <joanzare@gmail.com>
- Aleix Pol Gonzalez <aleixpol@blue-systems.com>
+                  Aleix Pol Gonzalez <aleixpol@blue-systems.com>
 Source: git://anongit.kde.org/kde-gtk-config
 
 Files: *
 Copyright: 2011-2013, Aleix Pol Gonzalez <aleixpol@blue-systems.com>
            2011, José Antonio Sanchez Reynaga <joanzare@gmail.com>
+           2016, Andrey Bondrov <andrey.bondrov@rosalab.ru>
+           2016, Jason A. Donenfeld <Jason@zx2c4.com>
 License: LGPL-2.1+3+KDEeV
 
 Files: gtk3proxies/preview3.c
@@ -23,7 +25,7 @@ Copyright: 2009, Kitware, Inc
 License: BSD-3-clause
 
 Files: debian/*
-Copyright: 2012-2013, Boris Pek <tehnick-8@mail.ru>
+Copyright: 2012-2017, Boris Pek <tehnick-8@yandex.ru>
 License: GPL-2+
 
 License: BSD-3-clause
