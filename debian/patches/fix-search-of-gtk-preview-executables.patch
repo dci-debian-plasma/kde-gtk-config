@@ -1,0 +1,43 @@
+Forwarded: no
+Description: Fix search of gtk*_preview executables
+ Due to Debian multiarch support gtk_preview and gtk3_preview executables are
+ installed into non-standard path (/usr/lib/*/libexec/) which is out of
+ search scope of QStandardPaths::findExecutable() function.
+ .
+ This patch is required for showing preview buttons in KDE-GTK-config UI.
+Author: Boris Pek <tehnick-8@yandex.ru>
+Last-Update: 2017-08-04
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,6 +26,8 @@
+ 
+ # Set KI18n translation domain
+ add_definitions(-DTRANSLATION_DOMAIN=\"kde-gtk-config\")
++add_definitions(-DCMAKE_INSTALL_PREFIX=\"${CMAKE_INSTALL_PREFIX}\")
++add_definitions(-DLIBEXEC_INSTALL_DIR=\"${LIBEXEC_INSTALL_DIR}\")
+ 
+ set(kcm_SRCS
+      src/iconthemesmodel.cpp
+diff --git a/src/gtkconfigkcmodule.cpp b/src/gtkconfigkcmodule.cpp
+--- a/src/gtkconfigkcmodule.cpp
++++ b/src/gtkconfigkcmodule.cpp
+@@ -87,6 +87,17 @@
+     QString gtk2Preview = QStandardPaths::findExecutable("gtk_preview");
+     QString gtk3Preview = QStandardPaths::findExecutable("gtk3_preview");
+     
++    // KStandardDirs::findExe was replaced by QStandardPaths::findExecutable
++    // in a wrong way. See for details:
++    // https://community.kde.org/Frameworks/Porting_Notes/KStandardDirs
++    static const QString searchPath = CMAKE_INSTALL_PREFIX "/" LIBEXEC_INSTALL_DIR;
++    if(gtk2Preview.isEmpty()) {
++        gtk2Preview = QStandardPaths::findExecutable("gtk_preview", QStringList() << searchPath);
++    }
++    if(gtk3Preview.isEmpty()) {
++        gtk3Preview = QStandardPaths::findExecutable("gtk3_preview", QStringList() << searchPath);
++    }
++    
+     m_p2 = new KProcess(this);
+     m_p2->setEnv("GTK2_RC_FILES", m_tempGtk2Preview, true);
+     if(!gtk2Preview.isEmpty()) {
