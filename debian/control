@@ -21,7 +21,7 @@ Build-Depends: cmake (>= 2.8.12),
 Homepage: https://projects.kde.org/projects/kde/workspace/kde-gtk-config
 Vcs-Git: https://anonscm.debian.org/git/pkg-kde/plasma/kde-gtk-config.git
 Vcs-Browser: https://anonscm.debian.org/git/pkg-kde/plasma/kde-gtk-config.git
-Standards-Version: 4.1.0
+Standards-Version: 4.1.2
 
 Package: kde-config-gtk-style
 Architecture: any
